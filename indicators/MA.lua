@@ -1,8 +1,10 @@
 local utils = require("LuaIndicators\\utils")
 local Class = require("LuaIndicators\\oop")
 local Base = require("LuaIndicators\\indicators\\base")
-local QSettings = dofile("LuaIndicators\\settings") -- dofile чтобы
+local QSettings = dofile("LuaIndicators\\settings.lua") -- dofile чтобы
     -- разные индикаторы имели разный экземпляр QSettings
+local Price = require("LuaIndicators\\indicators\\Price")
+
 
 
 Settings = QSettings({
@@ -18,24 +20,14 @@ period = 5
 })
 
 
-local priceSrc = setmetatable(
-    {},
-    {__index = function(tbl, index)
-            if index > 0 then
-                return C(index)
-            else
-                return nil
-            end
-        end
-    })
-
+local priceSrc = Price({})
 
 
 local MA = Class(Base)
 
-function MA:init(settings, price_src)
+function MA:init(settings, priceSrc)
     self.Super:init(settings)
-    self.price = price_src
+    self.price = priceSrc
 end
 
 function MA:calc(index)
@@ -43,7 +35,7 @@ function MA:calc(index)
     local period = self.settings.period
     utils.log({index, period, Settings.period})
     for i = 0, period - 1 do
-        local price = self.price[index - i]
+        local price = self.price(index - i)
         if price == nil then
             return nil
         end
