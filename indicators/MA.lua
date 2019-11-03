@@ -1,9 +1,11 @@
 local utils = require("LuaIndicators\\utils")
 local Class = require("LuaIndicators\\oop")
 local Base = require("LuaIndicators\\indicators\\base")
+local QSettings = dofile("LuaIndicators\\settings") -- dofile чтобы
+    -- разные индикаторы имели разный экземпляр QSettings
 
 
-Settings = { -- @todo: create a fabric
+Settings = QSettings({
 Name = "*MA = Moving Average",
 line = {
     {
@@ -13,12 +15,8 @@ line = {
         },
     },
 period = 5
-}
+})
 
-
-local function getSetting(name)
-    return Settings[name]
-end
 
 local priceSrc = setmetatable(
     {},
@@ -35,15 +33,14 @@ local priceSrc = setmetatable(
 
 local MA = Class(Base)
 
-
-function MA:init(price_src)
-    self.Super:init()
+function MA:init(settings, price_src)
+    self.Super:init(settings)
     self.price = price_src
 end
 
 function MA:calc(index)
     local sum = 0
-    local period = getSetting('period')
+    local period = self.settings.period
     utils.log({index, period, Settings.period})
     for i = 0, period - 1 do
         local price = self.price[index - i]
@@ -58,7 +55,7 @@ end
 local indicator
 
 function Init()
-    indicator = MA(priceSrc, Settings)
+    indicator = MA(QSettings, priceSrc)
     return #Settings.line
 end
 

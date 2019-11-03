@@ -11,9 +11,11 @@ local Base = Class()
         Если на значения values больше нет ссылок, то элементы в таблице могут быть
         автоматически удалены при сборке мусора. Это позволяет автоматически
         очищать память, при этом почти не пересчитывая значения заново.
+    @tparam QSettings settings Обертка над настройками. Служит для получения актуальных настроек.
 --]]
-function Base:init()
+function Base:init(settings)
     self.values = setmetatable({}, {__mode = 'v'})
+    self.settings = settings
 end
 
 
