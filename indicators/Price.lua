@@ -22,6 +22,8 @@ function OnCalculate(Index)
 	return price:tick(Index)
 end
 
+
+
 Price = {}
 
 function Price:new()
