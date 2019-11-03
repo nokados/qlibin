@@ -1,6 +1,9 @@
-local utils = require("LuaIndicators\\indicators\\utils")
+local utils = require("LuaIndicators\\utils")
+local Class = require("LuaIndicators\\oop")
+local Base = require("LuaIndicators\\indicators\\base")
 
-Settings = { -- todo: create a fabric
+
+Settings = { -- @todo: create a fabric
 Name = "*MA = Moving Average",
 line = {
     {
@@ -12,23 +15,12 @@ line = {
 period = 5
 }
 
-local indicator
-
-function Init()
-    indicator = MA:new(priceSrc, Settings)
-    return #Settings.line
-end
-
-function OnCalculate(Index)
-    return indicator(Index)
-end
-
 
 local function getSetting(name)
     return Settings[name]
 end
 
-priceSrc = setmetatable(
+local priceSrc = setmetatable(
     {},
     {__index = function(tbl, index)
             if index > 0 then
@@ -41,22 +33,12 @@ priceSrc = setmetatable(
 
 
 
-MA = {
-    values = setmetatable({}, {__mode = 'v'}),
-}
+local MA = Class(Base)
 
 
-function MA:new(price_src)
-    local newObj = {}
-    newObj.value = nil
-    newObj.price = price_src
-    self.__index = self
-    return setmetatable(newObj, self)
-end
-
-function MA:__call(index)
-    self.values[index] = self:calc(index)  -- todo: "= self.values[index] or " with settings changing
-    return self.values[index]
+function MA:init(price_src)
+    self.Super:init()
+    self.price = price_src
 end
 
 function MA:calc(index)
@@ -71,4 +53,15 @@ function MA:calc(index)
         sum = sum + price
     end
     return sum / period
+end
+
+local indicator
+
+function Init()
+    indicator = MA(priceSrc, Settings)
+    return #Settings.line
+end
+
+function OnCalculate(Index)
+    return indicator(Index)
 end
