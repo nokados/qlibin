@@ -13,7 +13,7 @@ function Fractals:calc(index)
     local pos
     if self:isFractal(midIndex) then
         pos = self.price(midIndex)
-        self:set(midIndex, pos)
+        self:setAndDraw(midIndex, pos)
     end
     return nil
 end

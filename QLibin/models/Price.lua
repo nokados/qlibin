@@ -9,7 +9,6 @@ local function getHLOCFunc(hloc)
     if hloc == 'L' then return L end
     if hloc == 'O' then return O end
     if hloc == 'C' then return C end
-    utils.log(utils.dump(hloc)..' not found in {H,L,O,C}. Using C instead.')
     return C -- default will be Close
 end
 

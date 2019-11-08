@@ -14,13 +14,17 @@ local Base = Class()
     @tparam QSettings settings Обертка над настройками. Служит для получения актуальных настроек.
     @tparam int out Индекс линии на графике, которая отображает значения этого индикатора
 --]]
+
 function Base:init(settings, out)
     self.out = out or 1
     self.values = setmetatable({}, {__mode = 'v'})
+
     self.settings = settings
 end
 
-
+function Base:reinit()
+    self:init(self.settings, self.out)
+end
 --[[ Позволяет вызывать объекты класса как функции.
     Результат работы функции этой функции - значение индикатора на заданном индексе.
     Значение либо берется из таблицы values, либо вычисляется методом `self:calc(index)`
@@ -29,12 +33,29 @@ end
     @treturn nil|number значение индикатора в позиции index
 --]]
 function Base:__call(index)
-    self.values[index] = self:calc(index)  -- @todo: "= self.values[index] or " with settings changing
-    return self.values[index]
+    if index == 1 then self:reinit() end
+    if self:isSet(index) then
+        return self:get(index)
+    else
+        self:set(index, self:calc(index))
+    end
+    return self:get(index)
+end
+
+function Base:isSet(index)
+    return self.values[index] ~= nil
+end
+
+function Base:get(index)
+    return self.values[index] and self.values[index][1]
 end
 
 function Base:set(index, value)
-    self.values[index] = value
+    self.values[index] = {value}
+end
+
+function Base:setAndDraw(index, value)
+    self:set(index, value)
     SetValue(index, self.out, value)
 end
 
