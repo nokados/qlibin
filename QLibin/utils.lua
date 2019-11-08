@@ -27,6 +27,19 @@ function M.copy(obj, seen)
   return res
 end
 
+function M.anyNil(...)
+    if select('#', ...) == 0 then return false end
+    local function helper(x, ...)
+        if select('#', ...) == 0 then
+          return x == nil
+        end
+        if x == nil then
+            return true
+        end
+        return helper(...)
+    end
+    return helper(...)
+end
 
 return M
 

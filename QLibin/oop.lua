@@ -14,6 +14,11 @@ local function Class(parent)
     -- Резервируем поле Super под родителя.
     class.Super    = parent
 
+    -- Наследуем метаметод __call
+    if parent and parent.__call ~= nil then
+        class.__call = parent.__call
+    end
+
 
     -- Функция, которая будет вызываться при вызове класса
     function mClass:__call(...)

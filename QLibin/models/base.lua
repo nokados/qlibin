@@ -1,4 +1,4 @@
-local Class = require("LuaIndicators\\oop")
+local Class = require("QLibin\\oop")
 
 local Base = Class()
 
@@ -12,8 +12,10 @@ local Base = Class()
         автоматически удалены при сборке мусора. Это позволяет автоматически
         очищать память, при этом почти не пересчитывая значения заново.
     @tparam QSettings settings Обертка над настройками. Служит для получения актуальных настроек.
+    @tparam int out Индекс линии на графике, которая отображает значения этого индикатора
 --]]
-function Base:init(settings)
+function Base:init(settings, out)
+    self.out = out or 1
     self.values = setmetatable({}, {__mode = 'v'})
     self.settings = settings
 end
@@ -29,6 +31,11 @@ end
 function Base:__call(index)
     self.values[index] = self:calc(index)  -- @todo: "= self.values[index] or " with settings changing
     return self.values[index]
+end
+
+function Base:set(index, value)
+    self.values[index] = value
+    SetValue(index, self.out, value)
 end
 
 --[[
