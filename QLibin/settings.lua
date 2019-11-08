@@ -1,4 +1,4 @@
-local utils = require("LuaIndicators\\utils")
+local utils = require("QLibin\\utils")
 
 local metaQSettings = {}
 function metaQSettings:__call(settings)

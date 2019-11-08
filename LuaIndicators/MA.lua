@@ -1,9 +1,9 @@
-local utils = require("LuaIndicators\\utils")
-local Class = require("LuaIndicators\\oop")
-local Base = require("LuaIndicators\\indicators\\base")
-local QSettings = dofile("LuaIndicators\\settings.lua") -- dofile чтобы
+local utils = require("QLibin\\utils")
+local Class = require("QLibin\\oop")
+local Base = require("LuaIndicators\\base")
+local QSettings = dofile("QLibin\\settings.lua") -- dofile чтобы
     -- разные индикаторы имели разный экземпляр QSettings
-local Price = require("LuaIndicators\\indicators\\Price")
+local Price = require("LuaIndicators\\Price")
 
 
 
