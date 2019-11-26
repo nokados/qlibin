@@ -44,9 +44,9 @@ end
 function ABabyUp:isAbandonedBaby(left, mid, right)
     if utils.anyNil(left, mid, right) then return false end -- все 3 должны присутствовать
     return left:isGreen() and -- первая зеленая (прозрачная)
-           mid.open > left.close and -- гэп по тренду вверх
-           mid.close > left.close and -- и не закрывается
-           right.open < mid.close -- 3-я свеча открывается гэп в противоположную сторону
+           mid.open >= left.close and -- гэп по тренду вверх
+           mid.close >= left.close and -- и не закрывается
+           right.open <= mid.close -- 3-я свеча открывается гэп в противоположную сторону
 end
 
 ----------------
