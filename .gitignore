@@ -5,3 +5,4 @@
 !LuaIndicators/*
 !QLibin/*
 !QLibin/models/*
+*.luac

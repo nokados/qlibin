@@ -3,7 +3,7 @@ local QSettings = dofile("QLibin\\settings.lua") -- dofile чтобы
     -- разные индикаторы имели разный экземпляр QSettings
 
 Settings = QSettings({
-Name = "*FRACTALS (Fractals)",
+Name = "*Fractals",
 Period = 5,
 line = {
 		{

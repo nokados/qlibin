@@ -1,4 +1,3 @@
-local utils = require("QLibin\\utils")
 local Class = require("QLibin\\oop")
 local Base = require("QLibin\\models\\base")
 local Price = require("QLibin\\models\\Price")
@@ -13,7 +12,6 @@ end
 function MA:calc(index)
     local sum = 0
     local period = self.settings.period
-    utils.log({index, period, Settings.period})
     for i = 0, period - 1 do
         local price = self.price(index - i)
         if price == nil then

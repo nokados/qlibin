@@ -10,9 +10,8 @@ local Fractals = Class(Base)
 
 function Fractals:calc(index)
     local midIndex = index - 2 -- remember: it may be < 0
-    local pos
     if self:isFractal(midIndex) then
-        pos = self.price(midIndex)
+        local pos = self.price(midIndex)
         self:setAndDraw(midIndex, pos)
     end
     return nil

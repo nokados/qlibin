@@ -16,7 +16,7 @@ local function Class(parent)
 
     -- Наследуем метаметод __call
     if parent and parent.__call ~= nil then
-        class.__call = parent.__call
+        class.__call =  class.__call or parent.__call
     end
 
 

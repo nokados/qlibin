@@ -1,4 +1,5 @@
 local Class = require("QLibin\\oop")
+local utils = require("QLibin\\utils")
 
 local Base = Class()
 
@@ -12,11 +13,15 @@ local Base = Class()
         автоматически удалены при сборке мусора. Это позволяет автоматически
         очищать память, при этом почти не пересчитывая значения заново.
     @tparam QSettings settings Обертка над настройками. Служит для получения актуальных настроек.
-    @tparam int out Индекс линии на графике, которая отображает значения этого индикатора
+    @tparam int|table out Индекс линии на графике, которая отображает значения этого индикатора.
+                          Может быть несколько индексов. Тогда они передаются в таблице: напр. {1,2,4}
 --]]
 
 function Base:init(settings, out)
     self.out = out or 1
+    if type(self.out) ~= 'table' then
+        self.out = {self.out}
+    end
     self.values = setmetatable({}, {__mode = 'v'})
 
     self.settings = settings
@@ -37,7 +42,7 @@ function Base:__call(index)
     if self:isSet(index) then
         return self:get(index)
     else
-        self:set(index, self:calc(index))
+        self:set(index, {self:calc(index)})
     end
     return self:get(index)
 end
@@ -47,16 +52,21 @@ function Base:isSet(index)
 end
 
 function Base:get(index)
-    return self.values[index] and self.values[index][1]
+    return unpack(self.values[index])
 end
 
 function Base:set(index, value)
-    self.values[index] = {value}
+    if type(value) ~= 'table' then
+        value = {value}
+    end
+    self.values[index] = value
 end
 
 function Base:setAndDraw(index, value)
     self:set(index, value)
-    SetValue(index, self.out, value)
+    for i = 1, #value do -- лень проверить длину self.out тоже
+        SetValue(index, self.out[i], value[i])
+    end
 end
 
 --[[
