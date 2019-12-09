@@ -1,5 +1,15 @@
 local Class = require("QLibin\\oop")
-local utils = require("QLibin\\utils")
+
+local value_meta = {is_value_meta = true} -- Metatable для значений, которые хранит индикатор.
+-- Используется, чтобы отличать запакованные значения от сырых (сырые тоже могут быть таблицей)
+local function Value(val)
+    return setmetatable(val, value_meta)
+end
+
+local function isPackedValue(val)
+    local val_mtb = getmetatable(val)
+    return val_mtb and val_mtb.is_value_meta
+end
 
 local Base = Class()
 
@@ -42,7 +52,7 @@ function Base:__call(index)
     if self:isSet(index) then
         return self:get(index)
     else
-        self:set(index, {self:calc(index)})
+        self:set(index, Value({self:calc(index)}))
     end
     return self:get(index)
 end
@@ -55,14 +65,17 @@ function Base:get(index)
     return unpack(self.values[index])
 end
 
-function Base:set(index, value)
-    if type(value) ~= 'table' then
-        value = {value}
+function Base:set(index, value) -- что если value таблица, но не упакованная, а объект?
+    if not isPackedValue(value) then
+        value = Value({value})
     end
     self.values[index] = value
 end
 
 function Base:setAndDraw(index, value)
+    if not isPackedValue(value) then
+        value = Value({value})
+    end
     self:set(index, value)
     for i = 1, #value do -- лень проверить длину self.out тоже
         SetValue(index, self.out[i], value[i])
